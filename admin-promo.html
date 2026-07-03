@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promo Codes - Admin</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <h2>BattleG Admin</h2>
+            <nav>
+                <a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="admin-users.html"><i class="fas fa-users"></i> Users</a>
+                <a href="admin-deposits.html"><i class="fas fa-money-bill-wave"></i> Deposits</a>
+                <a href="admin-withdrawals.html"><i class="fas fa-credit-card"></i> Withdrawals</a>
+                <a href="admin-tournaments.html"><i class="fas fa-trophy"></i> Tournaments</a>
+                <a href="admin-promo.html" class="active"><i class="fas fa-tags"></i> Promo Codes</a>
+                <a href="admin-notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+                <a href="admin-reports.html"><i class="fas fa-chart-line"></i> Reports</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <h1>Promo Codes</h1>
+            <div style="background:#111;padding:20px;border-radius:16px;margin-bottom:20px;">
+                <h3 style="color:#D4AF37;margin-bottom:15px;">Create Promo Code</h3>
+                <input type="text" id="promoCodeInput" placeholder="Code" style="padding:10px;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;margin:5px;">
+                <input type="number" id="promoReward" placeholder="Reward ₹" style="padding:10px;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;margin:5px;">
+                <input type="number" id="promoMaxUses" placeholder="Max Uses" style="padding:10px;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;margin:5px;">
+                <button class="btn btn-approve" onclick="createPromo()">Create</button>
+            </div>
+            <div id="promoList"></div>
+        </main>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="admin-promo.js"></script>
+</body>
+                                                                              </html>
