@@ -1,3 +1,15 @@
+const createBtn = document.getElementById("createBtn");
+const popup = document.getElementById("popup");
+const closePopup = document.getElementById("closePopup");
+
+createBtn.addEventListener("click", () => {
+    popup.classList.add("active");
+});
+
+closePopup.addEventListener("click", () => {
+    popup.classList.remove("active");
+});
+
 import { auth, db } from "../firebase/firebase.js";
 
 import {
