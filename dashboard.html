@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BattleG Admin Dashboard</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>BattleG</h2>
+
+<a href="dashboard.html" class="active"><i class="fa-solid fa-house"></i> Dashboard</a>
+
+<a href="tournaments.html"><i class="fa-solid fa-trophy"></i> Tournaments</a>
+
+<a href="games.html"><i class="fa-solid fa-gamepad"></i> Games</a>
+
+<a href="users.html"><i class="fa-solid fa-users"></i> Users</a>
+
+<a href="deposits.html"><i class="fa-solid fa-money-bill-wave"></i> Deposits</a>
+
+<a href="withdraws.html"><i class="fa-solid fa-wallet"></i> Withdraws</a>
+
+<a href="notifications.html"><i class="fa-solid fa-bell"></i> Notifications</a>
+
+<a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Dashboard</h1>
+
+<div class="adminName" id="adminName">
+
+Loading...
+
+</div>
+
+</div>
+
+<div class="cards">
+
+<div class="card">
+
+<h3>Total Users</h3>
+
+<h1 id="usersCount">0</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Live Tournament</h3>
+
+<h1 id="liveCount">0</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Pending Deposit</h3>
+
+<h1 id="depositCount">0</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Pending Withdraw</h3>
+
+<h1 id="withdrawCount">0</h1>
+
+</div>
+
+</div>
+
+<div class="quick">
+
+<a href="tournaments.html">
+
+➕ Create Tournament
+
+</a>
+
+<a href="notifications.html">
+
+📢 Send Notification
+
+</a>
+
+<a href="games.html">
+
+🎮 Manage Games
+
+</a>
+
+</div>
+
+</div>
+
+<script type="module" src="js/dashboard.js"></script>
+
+</body>
+
+</html>
