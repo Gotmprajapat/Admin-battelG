@@ -9,6 +9,7 @@ import {
 collection,
 addDoc,
 getDocs,
+getDoc,
 doc,
 updateDoc,
 deleteDoc,
@@ -299,3 +300,102 @@ loadTournament();
 };
 
 loadTournament();
+
+/* ==========================
+   EDIT TOURNAMENT
+========================== */
+
+window.editTournament = async(id)=>{
+
+const snap = await getDoc(
+doc(db,"tournaments",id)
+);
+
+if(!snap.exists()) return;
+
+const t = snap.data();
+
+editId = id;
+
+title.value = t.title;
+game.value = t.game;
+entryFee.value = t.entryFee;
+prizePool.value = t.prizePool;
+slots.value = t.slots;
+startTime.value = t.startTime;
+
+popup.classList.add("active");
+
+};
+
+/* ==========================================
+   AUTO STATUS UPDATE
+========================================== */
+
+async function updateTournamentStatus(){
+
+const snap = await getDocs(
+collection(db,"tournaments")
+);
+
+const now = new Date().getTime();
+
+for(const d of snap.docs){
+
+const t = d.data();
+
+const start = new Date(t.startTime).getTime();
+
+/* Tournament Live */
+
+if(
+t.status==="upcoming" &&
+start<=now
+){
+
+await updateDoc(
+
+doc(db,"tournaments",d.id),
+
+{
+status:"live"
+}
+
+);
+
+}
+
+/* Tournament Full */
+
+if(
+t.joined>=t.slots &&
+t.status==="live"
+){
+
+await updateDoc(
+
+doc(db,"tournaments",d.id),
+
+{
+joinClosed:true
+}
+
+);
+
+}
+
+}
+
+loadTournament();
+
+}
+
+/* ==========================
+AUTO REFRESH
+========================== */
+
+setInterval(()=>{
+
+updateTournamentStatus();
+
+},10000);
