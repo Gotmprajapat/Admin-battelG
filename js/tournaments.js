@@ -1,3 +1,4 @@
+alert("tournaments.js loaded");
 const createBtn = document.getElementById("createBtn");
 const popup = document.getElementById("popup");
 const closePopup = document.getElementById("closePopup");
