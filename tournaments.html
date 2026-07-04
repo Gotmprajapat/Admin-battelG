@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BattleG - Tournaments</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/tournaments.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>BattleG</h2>
+
+<a href="dashboard.html">
+<i class="fa-solid fa-house"></i>
+Dashboard
+</a>
+
+<a href="tournaments.html" class="active">
+<i class="fa-solid fa-trophy"></i>
+Tournaments
+</a>
+
+<a href="games.html">
+<i class="fa-solid fa-gamepad"></i>
+Games
+</a>
+
+<a href="users.html">
+<i class="fa-solid fa-users"></i>
+Users
+</a>
+
+<a href="deposits.html">
+<i class="fa-solid fa-money-bill-wave"></i>
+Deposits
+</a>
+
+<a href="withdraws.html">
+<i class="fa-solid fa-wallet"></i>
+Withdraws
+</a>
+
+<a href="notifications.html">
+<i class="fa-solid fa-bell"></i>
+Notifications
+</a>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Tournaments</h1>
+
+<button id="createBtn">
+
++ Create Tournament
+
+</button>
+
+</div>
+
+<div class="tableBox">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Game</th>
+
+<th>Title</th>
+
+<th>Entry</th>
+
+<th>Prize</th>
+
+<th>Slots</th>
+
+<th>Status</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tournamentTable">
+
+<tr>
+
+<td colspan="7">
+
+No Tournament Found
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- Create Tournament -->
+
+<div class="popup" id="popup">
+
+<div class="popupBox">
+
+<h2>Create Tournament</h2>
+
+<input
+type="text"
+id="title"
+placeholder="Tournament Title">
+
+<select id="game">
+
+<option value="Aim Challenge">
+
+Aim Challenge
+
+</option>
+
+<option value="Running Challenge">
+
+Running Challenge
+
+</option>
+
+<option value="Reaction Challenge">
+
+Reaction Challenge
+
+</option>
+
+</select>
+
+<input
+type="number"
+id="entryFee"
+placeholder="Entry Fee">
+
+<input
+type="number"
+id="prizePool"
+placeholder="Prize Pool">
+
+<input
+type="number"
+id="slots"
+placeholder="Total Slots">
+
+<input
+type="datetime-local"
+id="startTime">
+
+<button id="saveTournament">
+
+Save Tournament
+
+</button>
+
+<button id="closePopup">
+
+Cancel
+
+</button>
+
+</div>
+
+</div>
+
+<script type="module" src="js/tournaments.js"></script>
+
+</body>
+
+</html>
