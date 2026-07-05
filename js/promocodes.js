@@ -9,119 +9,128 @@ onSnapshot,
 serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-const promoCode=document.getElementById("promoCode");
-const promoReward=document.getElementById("promoReward");
-const promoLimit=document.getElementById("promoLimit");
-const createPromo=document.getElementById("createPromo");
-const promoTable=document.getElementById("promoTable");
+const promoCode = document.getElementById("promoCode");
+const promoReward = document.getElementById("promoReward");
+const promoLimit = document.getElementById("promoLimit");
+const createPromo = document.getElementById("createPromo");
+const promoTable = document.getElementById("promoTable");
 
-const promoRef=collection(db,"promoCodes");
+const promoRef = collection(db, "promoCodes");
 
-createPromo.onclick=async()=>{
+/* ==========================
+   CREATE PROMO
+========================== */
 
-const code=promoCode.value.trim().toUpperCase();
-const reward=Number(promoReward.value);
-const limit=Number(promoLimit.value);
+createPromo.onclick = async () => {
 
-if(!code||!reward||!limit){
+    const code = promoCode.value.trim().toUpperCase();
+    const reward = Number(promoReward.value);
+    const limit = Number(promoLimit.value);
 
-alert("Fill all fields");
+    if (!code || reward <= 0 || limit <= 0) {
+        alert("Fill all fields correctly");
+        return;
+    }
 
-return;
+    try {
 
-}
+        await addDoc(promoRef, {
+            code: code,
+            reward: reward,
+            limit: limit,
+            used: 0,
+            status: "active",
+            createdAt: serverTimestamp()
+        });
 
-await addDoc(promoRef,{
+        promoCode.value = "";
+        promoReward.value = "";
+        promoLimit.value = "";
 
-code:code,
-reward:reward,
-limit:limit,
-used:0,
-status:"active",
-createdAt:serverTimestamp()
+        alert("Promo Code Created");
 
-});
+    } catch (e) {
 
-promoCode.value="";
-promoReward.value="";
-promoLimit.value="";
+        console.error(e);
+        alert(e.message);
 
-alert("Promo Code Created");
+    }
 
 };
 
-onSnapshot(promoRef,(snapshot)=>{
+/* ==========================
+   LOAD PROMOS
+========================== */
 
-let data=[];
+onSnapshot(promoRef, (snapshot) => {
 
-snapshot.forEach((d)=>{
+    let data = [];
 
-data.push({
+    snapshot.forEach((d) => {
 
-id:d.id,
-...d.data()
+        data.push({
+            id: d.id,
+            ...d.data()
+        });
+
+    });
+
+    data.reverse();
+
+    promoTable.innerHTML = "";
+
+    if (data.length === 0) {
+
+        promoTable.innerHTML = `
+        <tr>
+            <td colspan="6">No Promo Codes</td>
+        </tr>
+        `;
+
+        return;
+    }
+
+    data.forEach((item) => {
+
+        promoTable.innerHTML += `
+
+        <tr>
+
+        <td>${item.code}</td>
+
+        <td>${item.reward}</td>
+
+        <td>${item.limit}</td>
+
+        <td>${item.used || 0}</td>
+
+        <td class="${item.status}">
+        ${item.status.toUpperCase()}
+        </td>
+
+        <td>
+
+        <button
+        class="deleteBtn"
+        onclick="deletePromo('${item.id}')">
+
+        Delete
+
+        </button>
+
+        </td>
+
+        </tr>
+
+        `;
+
+    });
 
 });
 
-});
-
-data.reverse();
-
-promoTable.innerHTML="";
-
-if(data.length===0){
-
-promoTable.innerHTML=`
-<tr>
-<td colspan="6">
-No Promo Codes
-</td>
-</tr>
-`;
-
-return;
-
-}
-
-data.forEach((item)=>{
-
-promoTable.innerHTML+=`
-
-<tr>
-
-<td>${item.code}</td>
-
-<td>${item.reward}</td>
-
-<td>${item.limit}</td>
-
-<td>${item.used}</td>
-
-<td class="${item.status}">
-${item.status.toUpperCase()}
-</td>
-
-<td>
-
-<button
-class="deleteBtn"
-onclick="deletePromo('${item.id}')">
-
-Delete
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-});
-
-/* =========================================
-   DELETE PROMO CODE
-========================================= */
+/* ==========================
+   DELETE PROMO
+========================== */
 
 window.deletePromo = async (id) => {
 
@@ -131,20 +140,15 @@ window.deletePromo = async (id) => {
 
         await deleteDoc(doc(db, "promoCodes", id));
 
-        alert("Promo Code Deleted Successfully");
+        alert("Promo Code Deleted");
 
-    } catch (error) {
+    } catch (e) {
 
-        console.error(error);
-
-        alert(error.message);
+        console.error(e);
+        alert(e.message);
 
     }
 
 };
 
-/* =========================================
-   MODULE READY
-========================================= */
-
-console.log("BattleG Promo Code Module Loaded Successfully");  
+console.log("Promo Code Module Loaded");
