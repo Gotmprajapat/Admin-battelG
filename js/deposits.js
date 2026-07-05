@@ -3,263 +3,187 @@ import { db } from "../firebase/firebase.js";
 import {
 collection,
 doc,
-getDoc,
-getDocs,
 updateDoc,
-query,
 onSnapshot,
-increment
+increment,
+addDoc,
+serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-const depositTable=document.getElementById("depositTable");
+const depositTable = document.getElementById("depositTable");
 
-const popup=document.getElementById("popup");
-const paymentImage=document.getElementById("paymentImage");
-const closePopup=document.getElementById("closePopup");
+const popup = document.getElementById("popup");
+const paymentImage = document.getElementById("paymentImage");
+const closePopup = document.getElementById("closePopup");
 
-const depositRef=collection(db,"depositRequests");
+const depositRef = collection(db, "depositRequests");
 
 /* ==========================
-      LOAD REQUESTS
+   LOAD REQUESTS
 ========================== */
 
-onSnapshot(depositRef,(snapshot)=>{
+onSnapshot(depositRef, (snapshot) => {
 
-depositTable.innerHTML="";
+    depositTable.innerHTML = "";
 
-if(snapshot.empty){
+    if (snapshot.empty) {
 
-depositTable.innerHTML=`
-<tr>
-<td colspan="7">
-No Deposit Requests
-</td>
-</tr>
-`;
+        depositTable.innerHTML = `
+        <tr>
+            <td colspan="7">No Deposit Requests</td>
+        </tr>
+        `;
 
-return;
+        return;
+    }
 
-}
+    snapshot.forEach((d) => {
 
-snapshot.forEach((d)=>{
+        const item = d.data();
 
-const item=d.data();
+        const status = item.status || "pending";
 
-const status=item.status||"pending";
+        let actionButtons = "";
 
-depositTable.innerHTML+=`
+        if (status === "pending") {
 
-<tr>
+            actionButtons = `
+            <button class="actionBtn approveBtn"
+            onclick="approveDeposit('${d.id}','${item.uid}',${item.amount})">
+            Approve
+            </button>
 
-<td>${item.name||"-"}</td>
+            <button class="actionBtn rejectBtn"
+            onclick="rejectDeposit('${d.id}')">
+            Reject
+            </button>
+            `;
 
-<td>${item.email||"-"}</td>
+        } else {
 
-<td>₹${item.amount}</td>
+            actionButtons = `<b>${status.toUpperCase()}</b>`;
 
-<td>${item.utr}</td>
+        }
 
-<td>
+        depositTable.innerHTML += `
 
-<button
-class="actionBtn viewBtn"
-onclick="viewImage('${item.screenshot}')">
+        <tr>
 
-View
+        <td>${item.name || "-"}</td>
 
-</button>
+        <td>${item.email || "-"}</td>
 
-</td>
+        <td>₹${item.amount}</td>
 
-<td class="${status}">
-${status.toUpperCase()}
-</td>
+        <td>${item.utr || "-"}</td>
 
-<td>
+        <td>
+        <button class="actionBtn viewBtn"
+        onclick="viewImage('${item.screenshot}')">
+        View
+        </button>
+        </td>
 
-<button
-class="actionBtn approveBtn"
-onclick="approveDeposit('${d.id}','${item.uid}',${item.amount})">
+        <td class="${status}">
+        ${status.toUpperCase()}
+        </td>
 
-Approve
+        <td>
+        ${actionButtons}
+        </td>
 
-</button>
+        </tr>
 
-<button
-class="actionBtn rejectBtn"
-onclick="rejectDeposit('${d.id}')">
+        `;
 
-Reject
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-});
+    });
 
 });
 
-closePopup.onclick=()=>{
+/* ==========================
+   IMAGE POPUP
+========================== */
 
-popup.classList.remove("active");
+window.viewImage = (url) => {
+
+    paymentImage.src = url;
+
+    popup.classList.add("active");
 
 };
 
-window.viewImage=(url)=>{
+closePopup.onclick = () => {
 
-paymentImage.src=url;
-
-popup.classList.add("active");
+    popup.classList.remove("active");
 
 };
 
-/* =========================================
-        APPROVE DEPOSIT
-========================================= */
+/* ==========================
+   APPROVE
+========================== */
 
-window.approveDeposit = async(requestId, uid, amount)=>{
+window.approveDeposit = async (requestId, uid, amount) => {
 
-if(!confirm("Approve this deposit?")) return;
+    if (!confirm("Approve this deposit?")) return;
 
-try{
+    try {
 
-const userRef = doc(db,"users",uid);
+        await updateDoc(doc(db, "users", uid), {
+            wallet: increment(Number(amount))
+        });
 
-await updateDoc(userRef,{
-wallet:increment(Number(amount))
-});
+        await addDoc(collection(db, "transactions"), {
 
-const requestRef = doc(db,"depositRequests",requestId);
+            uid: uid,
+            type: "Deposit",
+            amount: Number(amount),
+            status: "Approved",
+            createdAt: serverTimestamp()
 
-await updateDoc(requestRef,{
-status:"approved"
-});
+        });
 
-alert("Deposit Approved Successfully");
+        await updateDoc(doc(db, "depositRequests", requestId), {
 
-}catch(error){
+            status: "approved"
 
-console.error(error);
+        });
 
-alert("Approval Failed");
+        alert("Deposit Approved Successfully");
 
-}
+    } catch (e) {
 
-};
+        console.error(e);
 
-/* =========================================
-        REJECT DEPOSIT
-========================================= */
+        alert(e.message);
 
-window.rejectDeposit = async(requestId)=>{
-
-if(!confirm("Reject this deposit?")) return;
-
-try{
-
-const requestRef = doc(db,"depositRequests",requestId);
-
-await updateDoc(requestRef,{
-status:"rejected"
-});
-
-alert("Deposit Rejected");
-
-}catch(error){
-
-console.error(error);
-
-alert("Reject Failed");
-
-}
+    }
 
 };
 
-const searchDeposit=document.getElementById("searchDeposit");
-const statusFilter=document.getElementById("statusFilter");
+/* ==========================
+   REJECT
+========================== */
 
-let deposits=[];
+window.rejectDeposit = async (requestId) => {
 
-function renderDeposits(data){
+    if (!confirm("Reject this deposit?")) return;
 
-depositTable.innerHTML="";
+    try {
 
-if(data.length===0){
+        await updateDoc(doc(db, "depositRequests", requestId), {
 
-depositTable.innerHTML=`
-<tr>
-<td colspan="7">No Deposit Requests</td>
-</tr>
-`;
+            status: "rejected"
 
-return;
+        });
 
-}
+        alert("Deposit Rejected");
 
-data.forEach(item=>{
+    } catch (e) {
 
-let buttons="";
+        console.error(e);
 
-if(item.status==="pending"||!item.status){
+        alert(e.message);
 
-buttons=`
+    }
 
-<button class="actionBtn approveBtn"
-onclick="approveDeposit('${item.id}','${item.uid}',${item.amount})">
-
-Approve
-
-</button>
-
-<button class="actionBtn rejectBtn"
-onclick="rejectDeposit('${item.id}')">
-
-Reject
-
-</button>
-
-`;
-
-}else{
-
-buttons=`<b>${item.status.toUpperCase()}</b>`;
-
-}
-
-depositTable.innerHTML+=`
-<tr>
-
-<td>${item.name||"-"}</td>
-
-<td>${item.email||"-"}</td>
-
-<td>₹${item.amount}</td>
-
-<td>${item.utr}</td>
-
-<td>
-
-<button
-class="actionBtn viewBtn"
-onclick="viewImage('${item.screenshot}')">
-
-View
-
-</button>
-
-</td>
-
-<td>${item.status||"pending"}</td>
-
-<td>${buttons}</td>
-
-</tr>
-`;
-
-});
-
-}
+};
