@@ -17,124 +17,138 @@ where
 const adminName=document.getElementById("adminName");
 
 const usersCount=document.getElementById("usersCount");
-
+const adminsCount=document.getElementById("adminsCount");
+const gamesCount=document.getElementById("gamesCount");
+const tournamentCount=document.getElementById("tournamentCount");
 const liveCount=document.getElementById("liveCount");
-
 const depositCount=document.getElementById("depositCount");
-
 const withdrawCount=document.getElementById("withdrawCount");
+const promoCount=document.getElementById("promoCount");
+const notificationCount=document.getElementById("notificationCount");
+const walletBalance=document.getElementById("walletBalance");
 
 const logoutBtn=document.getElementById("logoutBtn");
-
-/* ==========================
-ADMIN LOGIN CHECK
-========================== */
 
 onAuthStateChanged(auth,async(user)=>{
 
 if(!user){
-
-window.location.href="index.html";
-
+location.href="index.html";
 return;
-
 }
 
-const adminRef=doc(db,"admins",user.uid);
-
-const adminSnap=await getDoc(adminRef);
+const adminSnap=await getDoc(doc(db,"admins",user.uid));
 
 if(!adminSnap.exists()){
-
 await signOut(auth);
-
-window.location.href="index.html";
-
+location.href="index.html";
 return;
-
 }
 
-const adminData=adminSnap.data();
-
-adminName.textContent=
-adminData.name || "Admin";
+adminName.textContent=adminSnap.data().name || "Admin";
 
 loadDashboard();
 
 });
 
-/* ==========================
-LOAD DASHBOARD
-========================== */
-
 async function loadDashboard(){
 
-// Total Users
-
-const usersSnap=await getDocs(
-collection(db,"users")
-);
-
+const usersSnap=await getDocs(collection(db,"users"));
 usersCount.textContent=usersSnap.size;
 
-// Live Tournament
+let wallet=0;
+
+usersSnap.forEach((d)=>{
+wallet+=Number(d.data().wallet||0);
+});
+
+walletBalance.textContent="₹"+wallet;
+
+const adminSnap=await getDocs(collection(db,"admins"));
+adminsCount.textContent=adminSnap.size;
+
+const gamesSnap=await getDocs(collection(db,"games"));
+gamesCount.textContent=gamesSnap.size;
+
+const tournamentSnap=await getDocs(collection(db,"tournaments"));
+tournamentCount.textContent=tournamentSnap.size;
 
 const liveSnap=await getDocs(
-
 query(
-
 collection(db,"tournaments"),
-
 where("status","==","live")
-
 )
-
 );
 
 liveCount.textContent=liveSnap.size;
 
-// Pending Deposit
-
-const depSnap=await getDocs(
-
+const depositSnap=await getDocs(
 query(
-
-collection(db,"deposits"),
-
+collection(db,"depositRequests"),
 where("status","==","pending")
-
 )
-
 );
 
-depositCount.textContent=depSnap.size;
+depositCount.textContent=depositSnap.size;
 
-// Pending Withdraw
-
-const wdSnap=await getDocs(
-
+const withdrawSnap=await getDocs(
 query(
-
-collection(db,"withdraws"),
-
+collection(db,"withdrawRequests"),
 where("status","==","pending")
-
 )
-
 );
 
-withdrawCount.textContent=wdSnap.size;
+withdrawCount.textContent=withdrawSnap.size;
+
+const promoSnap=await getDocs(collection(db,"promoCodes"));
+promoCount.textContent=promoSnap.size;
+
+const notificationSnap=await getDocs(collection(db,"notifications"));
+notificationCount.textContent=notificationSnap.size;
 
 }
 
 /* ==========================
-LOGOUT
+   AUTO REFRESH
 ========================== */
 
-logoutBtn.onclick=async()=>{
+setInterval(() => {
 
-await signOut(auth);
+    loadDashboard();
 
-window.location.href="index.html";
+}, 30000);
+
+/* ==========================
+   LOGOUT
+========================== */
+
+logoutBtn.onclick = async () => {
+
+    if (!confirm("Logout from Admin Panel?")) return;
+
+    try {
+
+        await signOut(auth);
+
+        location.href = "index.html";
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Logout Failed");
+
+    }
 
 };
+
+/* ==========================
+   ERROR HANDLING
+========================== */
+
+window.addEventListener("error", (e) => {
+
+    console.error("Dashboard Error:", e.error);
+
+});
+
+console.log("BattleG Dashboard Loaded Successfully");
