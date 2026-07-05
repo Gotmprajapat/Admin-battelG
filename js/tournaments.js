@@ -1,96 +1,87 @@
-/* ===========================================
+/* =====================================
    BattleG Admin Tournament System
-   Part 1
-=========================================== */
+===================================== */
 
-import { auth, db } from "../firebase/firebase.js";
+import { db } from "../firebase/firebase.js";
 
 import {
 collection,
 addDoc,
 getDocs,
-getDoc,
 doc,
+getDoc,
 updateDoc,
 deleteDoc,
-serverTimestamp,
 query,
-orderBy
+orderBy,
+serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-const popup = document.getElementById("popup");
-const createBtn = document.getElementById("createBtn");
-const closePopup = document.getElementById("closePopup");
-const saveTournament = document.getElementById("saveTournament");
-const tournamentTable = document.getElementById("tournamentTable");
+/* ========= Elements ========= */
 
-const title = document.getElementById("title");
-const game = document.getElementById("game");
-const entryFee = document.getElementById("entryFee");
-const prizePool = document.getElementById("prizePool");
-const slots = document.getElementById("slots");
-const startTime = document.getElementById("startTime");
+const popup=document.getElementById("popup");
+const createBtn=document.getElementById("createBtn");
+const closePopup=document.getElementById("closePopup");
+const saveTournament=document.getElementById("saveTournament");
 
-let editId = null;
+const title=document.getElementById("title");
+const game=document.getElementById("game");
+const entryFee=document.getElementById("entryFee");
+const prizePool=document.getElementById("prizePool");
+const slots=document.getElementById("slots");
+const startTime=document.getElementById("startTime");
+const endTime=document.getElementById("endTime");
 
-/* ==========================
-   OPEN POPUP
-========================== */
+const table=document.getElementById("tournamentTable");
 
-createBtn.addEventListener("click", () => {
+let editId=null;
+
+/* ========= Popup ========= */
+
+createBtn.onclick=()=>{
 
 popup.classList.add("active");
 
-});
+};
 
-/* ==========================
-   CLOSE POPUP
-========================== */
-
-closePopup.addEventListener("click", () => {
+closePopup.onclick=()=>{
 
 popup.classList.remove("active");
 
 clearForm();
 
-});
-
-/* ==========================
-   CLEAR FORM
-========================== */
+};
 
 function clearForm(){
 
-title.value="";
-
-game.selectedIndex=0;
-
-entryFee.value="";
-
-prizePool.value="";
-
-slots.value="";
-
-startTime.value="";
-
 editId=null;
+
+title.value="";
+entryFee.value="";
+prizePool.value="";
+slots.value="";
+startTime.value="";
+endTime.value="";
+game.selectedIndex=0;
 
 }
 
-/* ==========================
-   SAVE TOURNAMENT
-========================== */
+/* ========= Save Tournament ========= */
 
-saveTournament.addEventListener("click", async()=>{
+saveTournament.onclick=async()=>{
 
 if(
 title.value.trim()===""||
 entryFee.value===""||
 prizePool.value===""||
 slots.value===""||
-startTime.value===""){
+startTime.value===""||
+endTime.value===""){
+
 alert("Fill all fields");
+
 return;
+
 }
 
 const data={
@@ -111,6 +102,8 @@ status:"upcoming",
 
 startTime:startTime.value,
 
+endTime:endTime.value,
+
 createdAt:serverTimestamp()
 
 };
@@ -118,11 +111,8 @@ createdAt:serverTimestamp()
 if(editId){
 
 await updateDoc(
-
 doc(db,"tournaments",editId),
-
 data
-
 );
 
 alert("Tournament Updated");
@@ -130,11 +120,8 @@ alert("Tournament Updated");
 }else{
 
 await addDoc(
-
 collection(db,"tournaments"),
-
 data
-
 );
 
 alert("Tournament Created");
@@ -145,49 +132,54 @@ popup.classList.remove("active");
 
 clearForm();
 
-loadTournament();
+loadTournaments();
 
-});
-/* ==========================
+};
+
+/* =====================================
    LOAD TOURNAMENTS
-========================== */
+===================================== */
 
-async function loadTournament(){
+async function loadTournaments(){
 
-tournamentTable.innerHTML="";
+table.innerHTML="";
 
 const q=query(
 collection(db,"tournaments"),
 orderBy("createdAt","desc")
 );
 
-const snap=await getDocs(q);
+const snapshot=await getDocs(q);
 
-if(snap.empty){
+if(snapshot.empty){
 
-tournamentTable.innerHTML=`
-
+table.innerHTML=`
 <tr>
-
 <td colspan="7">
-
 No Tournament Found
-
 </td>
-
 </tr>
-
 `;
 
 return;
 
 }
 
-snap.forEach((d)=>{
+snapshot.forEach((item)=>{
 
-const t=d.data();
+const t=item.data();
 
-tournamentTable.innerHTML+=`
+let statusClass="status-upcoming";
+
+if(t.status==="live"){
+statusClass="status-live";
+}
+
+if(t.status==="ended"){
+statusClass="status-ended";
+}
+
+table.innerHTML+=`
 
 <tr>
 
@@ -201,29 +193,39 @@ tournamentTable.innerHTML+=`
 
 <td>${t.joined}/${t.slots}</td>
 
-<td>${t.status}</td>
+<td class="${statusClass}">
+${t.status.toUpperCase()}
+</td>
 
 <td>
 
-<button onclick="editTournament('${d.id}')">
+<button
+class="actionBtn editBtn"
+onclick="editTournament('${item.id}')">
 
 Edit
 
 </button>
 
-<button onclick="liveTournament('${d.id}')">
+<button
+class="actionBtn liveBtn"
+onclick="liveTournament('${item.id}')">
 
 Live
 
 </button>
 
-<button onclick="endTournament('${d.id}')">
+<button
+class="actionBtn endBtn"
+onclick="endTournament('${item.id}')">
 
 End
 
 </button>
 
-<button onclick="deleteTournament('${d.id}')">
+<button
+class="actionBtn deleteBtn"
+onclick="deleteTournament('${item.id}')">
 
 Delete
 
@@ -239,77 +241,35 @@ Delete
 
 }
 
-/* ==========================
-   DELETE
-========================== */
+/* =====================================
+DELETE
+===================================== */
 
 window.deleteTournament=async(id)=>{
 
-if(!confirm("Delete Tournament?")) return;
+if(!confirm("Delete Tournament ?")) return;
 
 await deleteDoc(
 doc(db,"tournaments",id)
 );
 
-loadTournament();
+loadTournaments();
 
 };
 
-/* ==========================
-   LIVE
-========================== */
+/* =====================================
+LOAD FIRST TIME
+===================================== */
 
-window.liveTournament=async(id)=>{
+loadTournaments();
 
-await updateDoc(
-
-doc(db,"tournaments",id),
-
-{
-
-status:"live"
-
-}
-
-);
-
-loadTournament();
-
-};
-
-/* ==========================
-   END
-========================== */
-
-window.endTournament=async(id)=>{
-
-await updateDoc(
-
-doc(db,"tournaments",id),
-
-{
-
-status:"ended"
-
-}
-
-);
-
-loadTournament();
-
-};
-
-loadTournament();
-
-/* ==========================
+/* =====================================
    EDIT TOURNAMENT
-========================== */
+===================================== */
 
 window.editTournament = async(id)=>{
 
-const snap = await getDoc(
-doc(db,"tournaments",id)
-);
+const snap = await getDoc(doc(db,"tournaments",id));
 
 if(!snap.exists()) return;
 
@@ -323,79 +283,103 @@ entryFee.value = t.entryFee;
 prizePool.value = t.prizePool;
 slots.value = t.slots;
 startTime.value = t.startTime;
+endTime.value = t.endTime;
 
 popup.classList.add("active");
 
 };
 
-/* ==========================================
-   AUTO STATUS UPDATE
-========================================== */
+/* =====================================
+   LIVE TOURNAMENT
+===================================== */
 
-async function updateTournamentStatus(){
+window.liveTournament = async(id)=>{
 
-const snap = await getDocs(
-collection(db,"tournaments")
+await updateDoc(doc(db,"tournaments",id),{
+
+status:"live"
+
+});
+
+loadTournaments();
+
+};
+
+/* =====================================
+   END TOURNAMENT
+===================================== */
+
+window.endTournament = async(id)=>{
+
+await updateDoc(doc(db,"tournaments",id),{
+
+status:"ended"
+
+});
+
+loadTournaments();
+
+};
+
+/* =====================================
+   REALTIME TOURNAMENT LIST
+===================================== */
+
+import {
+onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const tournamentQuery = query(
+collection(db,"tournaments"),
+orderBy("createdAt","desc")
 );
+
+onSnapshot(tournamentQuery, () => {
+loadTournaments();
+});
+
+/* =====================================
+   AUTO STATUS UPDATE
+===================================== */
+
+async function autoStatusUpdate(){
+
+const snapshot = await getDocs(collection(db,"tournaments"));
 
 const now = new Date().getTime();
 
-for(const d of snap.docs){
+for(const item of snapshot.docs){
 
-const t = d.data();
+const t = item.data();
 
 const start = new Date(t.startTime).getTime();
+const end = new Date(t.endTime).getTime();
 
-/* Tournament Live */
+let status = t.status;
 
-if(
-t.status==="upcoming" &&
-start<=now
-){
+if(now >= start && now < end){
+status = "live";
+}
+
+if(now >= end){
+status = "ended";
+}
+
+if(status !== t.status){
 
 await updateDoc(
-
-doc(db,"tournaments",d.id),
-
+doc(db,"tournaments",item.id),
 {
-status:"live"
+status:status
 }
-
-);
-
-}
-
-/* Tournament Full */
-
-if(
-t.joined>=t.slots &&
-t.status==="live"
-){
-
-await updateDoc(
-
-doc(db,"tournaments",d.id),
-
-{
-joinClosed:true
-}
-
 );
 
 }
 
 }
 
-loadTournament();
-
 }
 
-/* ==========================
-AUTO REFRESH
-========================== */
+setInterval(autoStatusUpdate,30000);
 
-setInterval(()=>{
-
-updateTournamentStatus();
-
-},10000);
+autoStatusUpdate();
