@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BattleG Admin - Notifications</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/notifications.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="main">
+
+<h1>Send Notification</h1>
+
+<div class="card">
+
+<input
+type="text"
+id="title"
+placeholder="Notification Title">
+
+<textarea
+id="message"
+placeholder="Notification Message"></textarea>
+
+<button id="sendBtn">
+
+Send Notification
+
+</button>
+
+</div>
+
+<h2>Notification History</h2>
+
+<div class="tableBox">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Title</th>
+
+<th>Message</th>
+
+<th>Date</th>
+
+</tr>
+
+</thead>
+
+<tbody id="notificationTable">
+
+<tr>
+
+<td colspan="3">
+
+No Notifications
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script type="module" src="js/notifications.js"></script>
+
+</body>
+
+</html>
