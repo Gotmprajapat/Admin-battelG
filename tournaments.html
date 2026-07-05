@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>BattleG - Tournaments</title>
+<title>BattleG Admin - Tournaments</title>
 
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/tournaments.css">
@@ -18,6 +18,8 @@
 </head>
 
 <body>
+
+<!-- Sidebar -->
 
 <div class="sidebar">
 
@@ -44,12 +46,12 @@ Users
 </a>
 
 <a href="deposits.html">
-<i class="fa-solid fa-money-bill-wave"></i>
+<i class="fa-solid fa-wallet"></i>
 Deposits
 </a>
 
 <a href="withdraws.html">
-<i class="fa-solid fa-wallet"></i>
+<i class="fa-solid fa-money-bill-transfer"></i>
 Withdraws
 </a>
 
@@ -60,11 +62,13 @@ Notifications
 
 </div>
 
+<!-- Main -->
+
 <div class="main">
 
 <div class="topbar">
 
-<h1>Tournaments</h1>
+<h1>Tournament Management</h1>
 
 <button id="createBtn">
 
@@ -94,7 +98,7 @@ Notifications
 
 <th>Status</th>
 
-<th>Action</th>
+<th>Actions</th>
 
 </tr>
 
@@ -106,7 +110,7 @@ Notifications
 
 <td colspan="7">
 
-No Tournament Found
+Loading...
 
 </td>
 
@@ -120,7 +124,7 @@ No Tournament Found
 
 </div>
 
-<!-- Create Tournament -->
+<!-- Popup -->
 
 <div class="popup" id="popup">
 
@@ -128,25 +132,43 @@ No Tournament Found
 
 <h2>Create Tournament</h2>
 
-<input type="text" id="title" placeholder="Tournament Title">
+<input id="title" placeholder="Tournament Title">
 
 <select id="game">
-<option value="Aim Challenge">Aim Challenge</option>
-<option value="Running Challenge">Running Challenge</option>
-<option value="Reaction Challenge">Reaction Challenge</option>
+
+<option>Aim Challenge</option>
+
+<option>Running Challenge</option>
+
+<option>Reaction Challenge</option>
+
 </select>
 
-<input type="number" id="entryFee" placeholder="Entry Fee">
+<input id="entryFee" type="number" placeholder="Entry Fee">
 
-<input type="number" id="prizePool" placeholder="Prize Pool">
+<input id="prizePool" type="number" placeholder="Prize Pool">
 
-<input type="number" id="slots" placeholder="Total Slots">
+<input id="slots" type="number" placeholder="Total Slots">
 
-<input type="datetime-local" id="startTime">
+<label>Start Time</label>
 
-<button id="saveTournament">Save Tournament</button>
+<input id="startTime" type="datetime-local">
 
-<button id="closePopup">Cancel</button>
+<label>End Time</label>
+
+<input id="endTime" type="datetime-local">
+
+<button id="saveTournament">
+
+Save Tournament
+
+</button>
+
+<button id="closePopup">
+
+Cancel
+
+</button>
 
 </div>
 
