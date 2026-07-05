@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BattleG Admin - Settings</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/settings.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>BattleG Admin</h2>
+
+<a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a>
+
+<a href="tournaments.html"><i class="fa-solid fa-trophy"></i> Tournaments</a>
+
+<a href="games.html"><i class="fa-solid fa-gamepad"></i> Games</a>
+
+<a href="users.html"><i class="fa-solid fa-users"></i> Users</a>
+
+<a href="deposits.html"><i class="fa-solid fa-wallet"></i> Deposits</a>
+
+<a href="withdraws.html"><i class="fa-solid fa-money-bill-transfer"></i> Withdraws</a>
+
+<a href="promocodes.html"><i class="fa-solid fa-gift"></i> Promo Codes</a>
+
+<a href="notifications.html"><i class="fa-solid fa-bell"></i> Notifications</a>
+
+<a href="settings.html" class="active">
+<i class="fa-solid fa-gear"></i> Settings
+</a>
+
+<a href="#" id="logoutBtn">
+<i class="fa-solid fa-right-from-bracket"></i> Logout
+</a>
+
+</div>
+
+<div class="main">
+
+<h1>App Settings</h1>
+
+<div class="settingsBox">
+
+<input type="text" id="appName" placeholder="App Name">
+
+<input type="text" id="appVersion" placeholder="App Version">
+
+<input type="number" id="minDeposit" placeholder="Minimum Deposit">
+
+<input type="number" id="minWithdraw" placeholder="Minimum Withdraw">
+
+<input type="number" id="maxWithdraw" placeholder="Maximum Withdraw">
+
+<input type="number" id="signupBonus" placeholder="Signup Bonus">
+
+<input type="number" id="referBonus" placeholder="Referral Bonus">
+
+<input type="text" id="upiId" placeholder="UPI ID">
+
+<input type="text" id="qrImage" placeholder="QR Image URL">
+
+<textarea
+id="notice"
+placeholder="Notice Message"></textarea>
+
+<label>
+
+<input type="checkbox" id="maintenance">
+
+Maintenance Mode
+
+</label>
+
+<label>
+
+<input type="checkbox" id="depositStatus">
+
+Enable Deposit
+
+</label>
+
+<label>
+
+<input type="checkbox" id="withdrawStatus">
+
+Enable Withdraw
+
+</label>
+
+<label>
+
+<input type="checkbox" id="tournamentStatus">
+
+Enable Tournament
+
+</label>
+
+<label>
+
+<input type="checkbox" id="registrationStatus">
+
+Enable Registration
+
+</label>
+
+<button id="saveSettings">
+
+Save Settings
+
+</button>
+
+</div>
+
+</div>
+
+<script type="module" src="js/settings.js"></script>
+
+</body>
+
+    </html>
