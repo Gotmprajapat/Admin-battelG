@@ -16,8 +16,6 @@ const popup=document.getElementById("popup");
 const paymentImage=document.getElementById("paymentImage");
 const closePopup=document.getElementById("closePopup");
 
-const depositRef=collection(db,"depositRequests");
-
 closePopup.onclick=()=>{
 
 popup.classList.remove("active");
@@ -32,11 +30,28 @@ popup.classList.add("active");
 
 };
 
+const depositRef=collection(db,"depositRequests");
+
 onSnapshot(depositRef,(snapshot)=>{
+
+let data=[];
+
+snapshot.forEach((docu)=>{
+
+data.push({
+
+id:docu.id,
+...docu.data()
+
+});
+
+});
+
+data.reverse();
 
 depositTable.innerHTML="";
 
-if(snapshot.empty){
+if(data.length===0){
 
 depositTable.innerHTML=`
 <tr>
@@ -50,27 +65,27 @@ return;
 
 }
 
-snapshot.forEach((d)=>{
+data.forEach((item)=>{
 
-const item=d.data();
+const status=(item.status||"pending").toLowerCase();
 
-const status=(item.status || "Pending").toLowerCase();
-
-let buttons="";
+let action="";
 
 if(status==="pending"){
 
-buttons=`
+action=`
 
-<button class="actionBtn approveBtn"
-onclick="approveDeposit('${d.id}','${item.uid}',${item.amount})">
+<button
+class="actionBtn approveBtn"
+onclick="approveDeposit('${item.id}','${item.uid}',${item.amount})">
 
 Approve
 
 </button>
 
-<button class="actionBtn rejectBtn"
-onclick="rejectDeposit('${d.id}')">
+<button
+class="actionBtn rejectBtn"
+onclick="rejectDeposit('${item.id}')">
 
 Reject
 
@@ -78,9 +93,13 @@ Reject
 
 `;
 
+}else if(status==="approved"){
+
+action=`<b style="color:#00C853;">APPROVED</b>`;
+
 }else{
 
-buttons=`<b>${status.toUpperCase()}</b>`;
+action=`<b style="color:red;">REJECTED</b>`;
 
 }
 
@@ -108,13 +127,15 @@ View
 
 </td>
 
-<td class="${status}">
+<td>
+
 ${status.toUpperCase()}
+
 </td>
 
 <td>
 
-${buttons}
+${action}
 
 </td>
 
@@ -126,9 +147,9 @@ ${buttons}
 
 });
 
-/* ==========================
+   /* =========================================
    APPROVE DEPOSIT
-========================== */
+========================================= */
 
 window.approveDeposit = async (requestId, uid, amount) => {
 
@@ -137,38 +158,47 @@ window.approveDeposit = async (requestId, uid, amount) => {
     try {
 
         // Wallet Update
-        await updateDoc(doc(db, "users", uid), {
-            wallet: increment(Number(amount))
-        });
+        await updateDoc(
+            doc(db, "users", uid),
+            {
+                wallet: increment(Number(amount))
+            }
+        );
 
         // Transaction History
-        await addDoc(collection(db, "transactions"), {
-            uid: uid,
-            type: "Deposit",
-            amount: Number(amount),
-            status: "Approved",
-            createdAt: serverTimestamp()
-        });
+        await addDoc(
+            collection(db, "transactions"),
+            {
+                uid: uid,
+                type: "Deposit",
+                amount: Number(amount),
+                status: "approved",
+                createdAt: serverTimestamp()
+            }
+        );
 
-        // Deposit Status
-        await updateDoc(doc(db, "depositRequests", requestId), {
-            status: "approved"
-        });
+        // Deposit Status Update
+        await updateDoc(
+            doc(db, "depositRequests", requestId),
+            {
+                status: "approved"
+            }
+        );
 
         alert("Deposit Approved Successfully");
 
     } catch (error) {
 
         console.error(error);
-        alert("Approval Failed");
+        alert(error.message);
 
     }
 
 };
 
-/* ==========================
+/* =========================================
    REJECT DEPOSIT
-========================== */
+========================================= */
 
 window.rejectDeposit = async (requestId) => {
 
@@ -176,17 +206,26 @@ window.rejectDeposit = async (requestId) => {
 
     try {
 
-        await updateDoc(doc(db, "depositRequests", requestId), {
-            status: "rejected"
-        });
+        await updateDoc(
+            doc(db, "depositRequests", requestId),
+            {
+                status: "rejected"
+            }
+        );
 
         alert("Deposit Rejected");
 
     } catch (error) {
 
         console.error(error);
-        alert("Reject Failed");
+        alert(error.message);
 
     }
 
 };
+
+/* =========================================
+   MODULE READY
+========================================= */
+
+console.log("BattleG Deposit Module Loaded");                                                  
