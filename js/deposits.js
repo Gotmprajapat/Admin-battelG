@@ -54,7 +54,7 @@ snapshot.forEach((d)=>{
 
 const item=d.data();
 
-const status=item.status||"pending";
+const status=(item.status || "pending").toLowerCase();
 
 let buttons="";
 
