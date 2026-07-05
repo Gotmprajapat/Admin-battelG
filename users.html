@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BattleG Admin - Users</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/users.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>BattleG</h2>
+
+<a href="dashboard.html">
+<i class="fa-solid fa-house"></i>
+Dashboard
+</a>
+
+<a href="tournaments.html">
+<i class="fa-solid fa-trophy"></i>
+Tournaments
+</a>
+
+<a href="games.html">
+<i class="fa-solid fa-gamepad"></i>
+Games
+</a>
+
+<a href="users.html" class="active">
+<i class="fa-solid fa-users"></i>
+Users
+</a>
+
+<a href="deposits.html">
+<i class="fa-solid fa-wallet"></i>
+Deposits
+</a>
+
+<a href="withdraws.html">
+<i class="fa-solid fa-money-bill-transfer"></i>
+Withdraws
+</a>
+
+<a href="notifications.html">
+<i class="fa-solid fa-bell"></i>
+Notifications
+</a>
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Users Management</h1>
+
+<input
+type="text"
+id="searchUser"
+placeholder="Search by Name / Email">
+
+</div>
+
+<div class="tableBox">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+
+<th>Email</th>
+
+<th>Wallet</th>
+
+<th>Tournaments</th>
+
+<th>Wins</th>
+
+<th>Status</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="usersTable">
+
+<tr>
+
+<td colspan="7">
+
+Loading Users...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- User Details Popup -->
+
+<div class="popup" id="popup">
+
+<div class="popupBox">
+
+<h2>User Details</h2>
+
+<p><b>Name :</b> <span id="viewName"></span></p>
+
+<p><b>Email :</b> <span id="viewEmail"></span></p>
+
+<p><b>Wallet :</b> ₹<span id="viewWallet"></span></p>
+
+<p><b>Total Tournaments :</b> <span id="viewTournament"></span></p>
+
+<p><b>Total Wins :</b> <span id="viewWins"></span></p>
+
+<p><b>Status :</b> <span id="viewStatus"></span></p>
+
+<button id="closePopup">
+
+Close
+
+</button>
+
+</div>
+
+</div>
+
+<script type="module" src="js/users.js"></script>
+
+</body>
+
+</html>
