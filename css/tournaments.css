@@ -1,41 +1,37 @@
-.popup{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.7);
-justify-content:center;
-align-items:center;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
 }
 
-.popup.active{
-display:flex;
+body{
+background:#0f1115;
+color:#fff;
 }
 
 .topbar{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:20px;
+margin-bottom:25px;
 }
 
 #createBtn{
 background:#ffb400;
 color:#111;
 border:none;
-padding:12px 20px;
+padding:12px 22px;
 border-radius:10px;
+font-size:15px;
 font-weight:700;
 cursor:pointer;
 }
 
 .tableBox{
 background:#1a1d24;
-padding:20px;
 border-radius:15px;
-overflow-x:auto;
+overflow:hidden;
 }
 
 table{
@@ -43,45 +39,119 @@ width:100%;
 border-collapse:collapse;
 }
 
-th{
+thead{
 background:#ffb400;
 color:#111;
-padding:14px;
-text-align:left;
 }
 
-td{
-padding:14px;
-border-bottom:1px solid #333;
-color:#fff;
+th,td{
+padding:15px;
+text-align:center;
 }
 
-.statusLive{
-color:#00ff6a;
+tbody tr{
+border-bottom:1px solid #2d313c;
+}
+
+tbody tr:hover{
+background:#222733;
+}
+
+.status-live{
+color:#00ff7f;
 font-weight:700;
 }
 
-.statusUpcoming{
+.status-upcoming{
 color:#ffb400;
 font-weight:700;
 }
 
-.statusEnded{
-color:#ff4444;
+.status-ended{
+color:#ff5252;
 font-weight:700;
 }
 
-.actionBtn{
-padding:8px 14px;
+.popup{
+display:none;
+position:fixed;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.7);
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.popup.active{
+display:flex;
+}
+
+.popupBox{
+width:430px;
+background:#1b1f28;
+padding:25px;
+border-radius:15px;
+}
+
+.popupBox h2{
+margin-bottom:20px;
+}
+
+.popupBox input,
+.popupBox select{
+width:100%;
+height:48px;
+margin-bottom:15px;
+padding:0 12px;
 border:none;
+border-radius:10px;
+background:#2b313d;
+color:#fff;
+}
+
+.popupBox label{
+display:block;
+margin-bottom:6px;
+font-size:14px;
+}
+
+#saveTournament,
+#closePopup{
+width:100%;
+height:48px;
+border:none;
+border-radius:10px;
+font-size:15px;
+font-weight:700;
+cursor:pointer;
+margin-top:10px;
+}
+
+#saveTournament{
+background:#ffb400;
+color:#111;
+}
+
+#closePopup{
+background:#444;
+color:#fff;
+}
+
+.actionBtn{
+border:none;
+padding:8px 12px;
 border-radius:8px;
 cursor:pointer;
-margin-right:5px;
+margin:2px;
+font-size:13px;
 font-weight:600;
 }
 
 .editBtn{
-background:#2196F3;
+background:#2196f3;
 color:#fff;
 }
 
@@ -95,62 +165,7 @@ background:#00c853;
 color:#fff;
 }
 
-.popup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.7);
-display:none;
-justify-content:center;
-align-items:center;
-}
-
-.popup.active{
-display:flex;
-}
-
-.popupBox{
-width:420px;
-background:#1a1d24;
-padding:25px;
-border-radius:15px;
-}
-
-.popupBox h2{
-margin-bottom:20px;
-}
-
-.popupBox input,
-.popupBox select{
-width:100%;
-height:50px;
-margin-bottom:15px;
-background:#2b2f38;
-border:none;
-border-radius:10px;
-padding:0 15px;
-color:#fff;
-}
-
-#saveTournament,
-#closePopup{
-width:100%;
-height:50px;
-border:none;
-border-radius:10px;
-font-weight:700;
-cursor:pointer;
-margin-top:10px;
-}
-
-#saveTournament{
-background:#ffb400;
-color:#111;
-}
-
-#closePopup{
-background:#444;
+.endBtn{
+background:#ff9800;
 color:#fff;
 }
