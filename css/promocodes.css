@@ -1,0 +1,104 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+body{
+background:#0f1115;
+color:#fff;
+}
+
+.main{
+padding:25px;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+.card{
+background:#1b1f28;
+padding:20px;
+border-radius:12px;
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+margin-bottom:25px;
+}
+
+.card input{
+flex:1;
+min-width:200px;
+height:45px;
+padding:0 15px;
+border:none;
+border-radius:8px;
+background:#2a2f3b;
+color:#fff;
+outline:none;
+}
+
+.card button{
+height:45px;
+padding:0 25px;
+border:none;
+border-radius:8px;
+background:#ffb400;
+color:#111;
+font-weight:700;
+cursor:pointer;
+}
+
+.card button:hover{
+opacity:.9;
+}
+
+.tableBox{
+background:#1b1f28;
+border-radius:12px;
+overflow:hidden;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+thead{
+background:#ffb400;
+color:#111;
+}
+
+th,td{
+padding:15px;
+text-align:center;
+}
+
+tbody tr{
+border-bottom:1px solid #2d313c;
+}
+
+tbody tr:hover{
+background:#232833;
+}
+
+.deleteBtn{
+background:#f44336;
+color:#fff;
+border:none;
+padding:8px 15px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.active{
+color:#00e676;
+font-weight:bold;
+}
+
+.expired{
+color:#ff5252;
+font-weight:bold;
+}
