@@ -25,10 +25,7 @@ const viewStatus=document.getElementById("viewStatus");
 
 let users=[];
 
-const q=query(
-collection(db,"users"),
-orderBy("createdAt","desc")
-);
+const q = collection(db,"users");
 
 onSnapshot(q,(snapshot)=>{
 
