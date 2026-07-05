@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BattleG Admin - Games</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/games.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>BattleG</h2>
+
+<a href="dashboard.html">
+<i class="fa-solid fa-house"></i>
+Dashboard
+</a>
+
+<a href="tournaments.html">
+<i class="fa-solid fa-trophy"></i>
+Tournaments
+</a>
+
+<a href="games.html" class="active">
+<i class="fa-solid fa-gamepad"></i>
+Games
+</a>
+
+<a href="users.html">
+<i class="fa-solid fa-users"></i>
+Users
+</a>
+
+<a href="deposits.html">
+<i class="fa-solid fa-wallet"></i>
+Deposits
+</a>
+
+<a href="withdraws.html">
+<i class="fa-solid fa-money-bill-transfer"></i>
+Withdraws
+</a>
+
+<a href="notifications.html">
+<i class="fa-solid fa-bell"></i>
+Notifications
+</a>
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Games Management</h1>
+
+<button id="createGameBtn">
+
++ Add Game
+
+</button>
+
+</div>
+
+<div class="tableBox">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Game Name</th>
+
+<th>Game ID</th>
+
+<th>Category</th>
+
+<th>Status</th>
+
+<th>Created</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="gamesTable">
+
+<tr>
+
+<td colspan="6">
+
+No Games Available
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- Popup -->
+
+<div class="popup" id="popup">
+
+<div class="popupBox">
+
+<h2>Add New Game</h2>
+
+<input
+type="text"
+id="gameName"
+placeholder="Game Name">
+
+<input
+type="text"
+id="gameId"
+placeholder="Game ID (example: aim-challenge)">
+
+<select id="category">
+
+<option value="Skill">Skill</option>
+
+<option value="Speed">Speed</option>
+
+<option value="Reaction">Reaction</option>
+
+<option value="Arcade">Arcade</option>
+
+</select>
+
+<textarea
+id="description"
+placeholder="Game Description"></textarea>
+
+<select id="status">
+
+<option value="active">Active</option>
+
+<option value="inactive">Inactive</option>
+
+</select>
+
+<button id="saveGame">
+
+Save Game
+
+</button>
+
+<button id="closePopup">
+
+Cancel
+
+</button>
+
+</div>
+
+</div>
+
+<script type="module" src="js/games.js"></script>
+
+</body>
+
+  </html>
