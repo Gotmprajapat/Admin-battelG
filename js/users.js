@@ -1,23 +1,14 @@
-/* =========================================
-        BattleG Admin Users System
-========================================= */
-
 import { db } from "../firebase/firebase.js";
 
 import {
 collection,
-getDocs,
-doc,
-getDoc,
-updateDoc,
 query,
 orderBy,
-onSnapshot
+onSnapshot,
+doc,
+getDoc,
+updateDoc
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-/* =========================
-        Elements
-========================= */
 
 const usersTable=document.getElementById("usersTable");
 const searchUser=document.getElementById("searchUser");
@@ -32,53 +23,39 @@ const viewTournament=document.getElementById("viewTournament");
 const viewWins=document.getElementById("viewWins");
 const viewStatus=document.getElementById("viewStatus");
 
-let allUsers=[];
-
-/* =========================
-        Load Users
-========================= */
-
-function loadUsers(){
+let users=[];
 
 const q=query(
 collection(db,"users"),
-orderBy("joinedAt","desc")
+orderBy("createdAt","desc")
 );
 
 onSnapshot(q,(snapshot)=>{
 
-allUsers=[];
+users=[];
 
-snapshot.forEach(doc=>{
+snapshot.forEach((d)=>{
 
-allUsers.push({
-id:doc.id,
-...doc.data()
+users.push({
+id:d.id,
+...d.data()
 });
 
 });
 
-renderUsers(allUsers);
+renderUsers(users);
 
 });
 
-}
-
-/* =========================
-        Render Users
-========================= */
-
-function renderUsers(list){
+function renderUsers(data){
 
 usersTable.innerHTML="";
 
-if(list.length===0){
+if(data.length===0){
 
 usersTable.innerHTML=`
 <tr>
-<td colspan="7">
-No Users Found
-</td>
+<td colspan="7">No Users Found</td>
 </tr>
 `;
 
@@ -86,23 +63,7 @@ return;
 
 }
 
-list.forEach(user=>{
-
-const statusClass=
-user.status==="banned"
-?"bannedStatus"
-:"activeStatus";
-
-const actionButton=
-user.status==="banned"
-?`<button class="actionBtn unbanBtn"
-onclick="toggleBan('${user.id}','active')">
-Unban
-</button>`
-:`<button class="actionBtn banBtn"
-onclick="toggleBan('${user.id}','banned')">
-Ban
-</button>`;
+data.forEach(user=>{
 
 usersTable.innerHTML+=`
 
@@ -116,23 +77,25 @@ usersTable.innerHTML+=`
 
 <td>${user.totalTournament||0}</td>
 
-<td>${user.totalWins||0}</td>
+<td>${user.totalWinning||0}</td>
 
-<td class="${statusClass}">
-${user.status||"active"}
-</td>
+<td>${user.status||"active"}</td>
 
 <td>
 
-<button
-class="actionBtn viewBtn"
+<button class="actionBtn viewBtn"
 onclick="viewUser('${user.id}')">
 
 View
 
 </button>
 
-${actionButton}
+<button class="actionBtn banBtn"
+onclick="toggleBan('${user.id}')">
+
+${user.status==="banned"?"Unban":"Ban"}
+
+</button>
 
 </td>
 
@@ -144,17 +107,18 @@ ${actionButton}
 
 }
 
-loadUsers();
-
-    /* =========================================
-        VIEW USER
-========================================= */
+/* ==========================
+   VIEW USER
+========================== */
 
 window.viewUser = async(id)=>{
 
 const snap = await getDoc(doc(db,"users",id));
 
-if(!snap.exists()) return;
+if(!snap.exists()){
+alert("User not found");
+return;
+}
 
 const user = snap.data();
 
@@ -162,16 +126,16 @@ viewName.textContent = user.name || "-";
 viewEmail.textContent = user.email || "-";
 viewWallet.textContent = user.wallet || 0;
 viewTournament.textContent = user.totalTournament || 0;
-viewWins.textContent = user.totalWins || 0;
+viewWins.textContent = user.totalWinning || 0;
 viewStatus.textContent = user.status || "active";
 
 popup.classList.add("active");
 
 };
 
-/* =========================================
-        CLOSE POPUP
-========================================= */
+/* ==========================
+   CLOSE POPUP
+========================== */
 
 closePopup.onclick = ()=>{
 
@@ -179,51 +143,98 @@ popup.classList.remove("active");
 
 };
 
-/* =========================================
-        BAN / UNBAN USER
-========================================= */
+/* ==========================
+   BAN / UNBAN
+========================== */
 
-window.toggleBan = async(id,status)=>{
+window.toggleBan = async(id)=>{
 
-const text =
-status==="banned"
-? "Ban this user?"
-: "Unban this user?";
+const ref = doc(db,"users",id);
 
-if(!confirm(text)) return;
+const snap = await getDoc(ref);
 
-await updateDoc(
-doc(db,"users",id),
-{
-status:status
-}
-);
+if(!snap.exists()) return;
+
+const user = snap.data();
+
+const newStatus =
+user.status==="banned"
+? "active"
+: "banned";
+
+await updateDoc(ref,{
+status:newStatus
+});
 
 };
 
-/* =========================================
-        SEARCH USER
-========================================= */
+/* ==========================
+   SEARCH
+========================== */
 
 searchUser.addEventListener("input",()=>{
 
-const keyword =
-searchUser.value.toLowerCase();
+const value = searchUser.value.toLowerCase();
 
-const filtered =
-allUsers.filter(user=>{
+const filtered = users.filter(user=>{
 
-const name =
-(user.name||"").toLowerCase();
-
-const email =
-(user.email||"").toLowerCase();
-
-return name.includes(keyword) ||
-email.includes(keyword);
+return (
+(user.name||"").toLowerCase().includes(value) ||
+(user.email||"").toLowerCase().includes(value)
+);
 
 });
 
 renderUsers(filtered);
 
 });
+
+/* =========================================
+        REALTIME REFRESH
+========================================= */
+
+function refreshUsers() {
+
+renderUsers(users);
+
+}
+
+/* =========================================
+        WINDOW FUNCTIONS
+========================================= */
+
+window.refreshUsers = refreshUsers;
+
+/* =========================================
+        ESC CLOSE POPUP
+========================================= */
+
+window.addEventListener("keydown",(e)=>{
+
+if(e.key==="Escape"){
+
+popup.classList.remove("active");
+
+}
+
+});
+
+/* =========================================
+        CLICK OUTSIDE POPUP
+========================================= */
+
+popup.addEventListener("click",(e)=>{
+
+if(e.target===popup){
+
+popup.classList.remove("active");
+
+}
+
+});
+
+/* =========================================
+        USERS READY
+========================================= */
+
+console.log("BattleG Users Module Loaded Successfully");
